@@ -1,4 +1,8 @@
-﻿using Exiled.Loader;
+﻿#if EXILED
+using Exiled.Loader;
+#endif
+
+using LabApi.Features;
 
 namespace JITDebugTool.API.SerializedElements
 {
@@ -11,7 +15,10 @@ namespace JITDebugTool.API.SerializedElements
         public string TargetPluginName { get; } = Plugin.Instance.Config.Plugin;
 
         public bool Exiled { get; } = true;
-
+#if EXILED
         public string ExiledVersion { get; } = Loader.Version.ToString();
+#else
+        public string ExiledVersion { get; } = LabApiProperties.CompiledVersion;
+#endif
     }
 }

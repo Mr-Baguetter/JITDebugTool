@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JITDebugTool", "AmazingDebugTool\JITDebugTool.csproj", "{5B5B0766-0319-441F-A074-A4F81E2EFEC7}"
 EndProject
@@ -13,8 +13,8 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|Any CPU.ActiveCfg = LabApi|Any CPU
+		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|Any CPU.Build.0 = LabApi|Any CPU
 		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|x64.ActiveCfg = Debug|x64
 		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Debug|x64.Build.0 = Debug|x64
 		{5B5B0766-0319-441F-A074-A4F81E2EFEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU

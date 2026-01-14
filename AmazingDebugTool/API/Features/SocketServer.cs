@@ -1,4 +1,7 @@
-﻿using Exiled.API.Features;
+﻿#if EXILED
+using Exiled.API.Features;
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +23,7 @@ namespace JITDebugTool.API.Features
             Server = new WebSocketServer(IPAddress.Parse("0.0.0.0"), Plugin.Instance.Config.SocketPort);
             Server.AddWebSocketService<LogService>("/logs");
             Server.Start();
-            Log.Info($"Socket server is ready and is listening on 0.0.0.0:{Plugin.Instance.Config.SocketPort}");
+            Logger.Info($"Socket server is ready and is listening on 0.0.0.0:{Plugin.Instance.Config.SocketPort}");
         }
 
         public void Stop()

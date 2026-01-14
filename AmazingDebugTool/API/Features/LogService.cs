@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebSocketSharp;
 using WebSocketSharp.Server;
+#if LABAPI
+using static JITDebugTool.API.Extensions.QueueExtensions;
+#endif
 
 namespace JITDebugTool.API.Features
 {
@@ -37,7 +40,7 @@ namespace JITDebugTool.API.Features
             {
                 if (e.Data == "GET_EVENT_CHRONO")
                 {
-                    Exiled.API.Features.Log.Info("GETTING CHRONO v2!");
+                    Logger.Info("GETTING CHRONO v2!");
                     try
                     {
                         Task.Run(() =>
@@ -47,7 +50,7 @@ namespace JITDebugTool.API.Features
                                 Queue<CallEntry> queue = new(Plugin.Instance.writer.fullLogs.ToArray());
                                 Queue<SerializedMethod> methods = new(Plugin.Instance.writer.fullMethods.Values.ToArray());
 
-                                Exiled.API.Features.Log.Info($"PREPPING LOGS AS {queue.Count}! ({Plugin.Instance.writer.fullLogs.Count})");
+                                Logger.Info($"PREPPING LOGS AS {queue.Count}! ({Plugin.Instance.writer.fullLogs.Count})");
 
                                 while (queue.Count > 0 || methods.Count > 0)
                                 {
@@ -65,13 +68,13 @@ namespace JITDebugTool.API.Features
                             }
                             catch (Exception ex)
                             {
-                                Exiled.API.Features.Log.Error(ex);
+                                Logger.Error(ex);
                             }
                         });
                     }
                     catch (Exception ex)
                     {
-                        Exiled.API.Features.Log.Error(ex);
+                        Logger.Error(ex);
                     }
                 }
                 else if (e.Data == "SUBSCRIBE")

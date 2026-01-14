@@ -1,6 +1,9 @@
-﻿using Exiled.API.Features;
+﻿#if EXILED
+using Exiled.API.Features;
 using Exiled.API.Interfaces;
 using Exiled.Loader;
+#endif
+
 using HarmonyLib;
 using JITDebugTool.API.SerializedElements;
 using System;
@@ -15,8 +18,12 @@ namespace JITDebugTool
         public readonly Assembly targetAssembly;
 
         public readonly IReadOnlyList<Type> types;
+#if EXILED
 
         public readonly IPlugin<IConfig> plugin;
+#else
+        public readonly LabApi.Loader.Features.Plugins.Plugin plugin;
+#endif
 
         public SerializedPluginData pluginData = null;
 
@@ -29,18 +36,31 @@ namespace JITDebugTool
 
         public Patcher(Harmony harmony)
         {
+#if EXILED
             plugin = Loader.GetPlugin(Plugin.Instance.Config.Plugin);
-
+#else
+            plugin = LabApi.Loader.PluginLoader.EnabledPlugins.FirstOrDefault(p => p.Name == Plugin.Instance.Config.Plugin);
+#endif
             if (plugin is null)
             {
-                Log.Warn($"ERROR: Plugin {Plugin.Instance.Config.Plugin} not found!");
-                Log.Warn($"Available plugins: {string.Join(",", Loader.Plugins.Select(p => p.Name))}");
+                Logger.Warn($"ERROR: Plugin {Plugin.Instance.Config.Plugin} not found!");
+#if EXILED
+                Logger.Warn($"Available plugins: {string.Join(",", Loader.Plugins.Select(p => p.Name))}");
+#else
+                Logger.Warn($"Available plugins: {string.Join(",", LabApi.Loader.PluginLoader.EnabledPlugins.Select(p => p.Name))}");
+#endif
                 return;
             }
 
+#if EXILED
             targetAssembly = plugin.Assembly;
-
             List<Type> types = [..plugin.Assembly.GetTypes()];
+#else
+            LabApi.Loader.PluginLoader.Plugins.TryGetValue(plugin, out var asm);
+            targetAssembly = asm;
+            List<Type> types = [.. asm.GetTypes()];
+#endif
+
             types.RemoveAll(t => t.IsInterface);
             types.RemoveAll(t => Plugin.Instance.Config.IgnoreTypes.Contains(t.Name));
             types.RemoveAll(t => t.GetCustomAttributes(typeof(HarmonyPatch), false).Any()); // Ignore harmony plz
@@ -58,7 +78,7 @@ namespace JITDebugTool
                     if (!Plugin.Instance.Config.IgnoreMethods.Contains(method.Name))
                         PatchMethod(method, type);
 
-            Log.Info($"Successfully patched {types.Count} types and {PatchedMethods} methods!");
+            Logger.Info($"Successfully patched {types.Count} types and {PatchedMethods} methods!");
             pluginData.TotalPatchedMethods = PatchedMethods;
         }
 
@@ -73,15 +93,15 @@ namespace JITDebugTool
                 );
 
                 PatchedMethods++;
-                Log.Info($"Successfully patched method {type.FullName}::{method.Name}() !");
+                Logger.Info($"Successfully patched method {type.FullName}::{method.Name}() !");
                 pluginData.Methods.Add(new(method));
             } catch (Exception e)
             {
                 pluginData.NotPatchedMethods.Add(new(method));
                 if (e.GetType() == typeof(NotSupportedException))
-                    Log.Warn($"Wont patch method {type.FullName}{(method.IsStatic ? "::" : ".")}{method.Name}() - not supported!");
+                    Logger.Warn($"Wont patch method {type.FullName}{(method.IsStatic ? "::" : ".")}{method.Name}() - not supported!");
                 else
-                    Log.Error($"Wont patch method {type.FullName}{(method.IsStatic ? "::" : ".")}{method.Name}() - Generic exception:\n{e}");
+                    Logger.Error($"Wont patch method {type.FullName}{(method.IsStatic ? "::" : ".")}{method.Name}() - Generic exception:\n{e}");
             }
         }
     }

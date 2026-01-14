@@ -1,8 +1,13 @@
-﻿using System;
+﻿#if EXILED
+using Exiled.API.Features;
+#else
+using LabApi.Features.Wrappers;
+#endif
+
+using System;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using Exiled.API.Features;
 using JITDebugTool.API.Features;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -42,13 +47,17 @@ namespace JITDebugTool
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Logger.Error(ex);
             }
         }
 
         private async Task Action()
         {
+#if EXILED
             while (!Round.IsEnded)
+#else
+            while (!Round.IsRoundEnded)
+#endif
             {
                 if (_builder.Count == 0 && _methods.Count == 0)
                     goto rtx;
@@ -74,7 +83,7 @@ namespace JITDebugTool
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex);
+                    Logger.Error(ex);
                 }
 
                 rtx:

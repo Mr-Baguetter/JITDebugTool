@@ -1,10 +1,16 @@
-﻿using Exiled.API.Interfaces;
+﻿#if EXILED
+using Exiled.API.Interfaces;
+#endif
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace JITDebugTool
 {
+#if EXILED
     internal class Config : IConfig
+#else
+    internal class Config
+#endif
     {
         [Description("Whether the plugin is enabled")]
         public bool IsEnabled { get; set; } = true;
